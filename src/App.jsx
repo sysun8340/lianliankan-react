@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
-import GameBoard from './components/GameBoard'
-import gameBoard from './styles/gameBoard.css'
+import Game from './components/Game'
+import './styles/game.css'
 
 class App extends Component {
 
   render() {
-  
     return (
       <div>
-        <GameBoard style={gameBoard} />
+        <h1>连连看</h1>
+        <Game />
       </div>
     )
   }

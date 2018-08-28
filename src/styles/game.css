@@ -1,4 +1,4 @@
-.gameBoard {
+.game {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -6,4 +6,9 @@
       -ms-flex-pack: center;
           justify-content: center;
   border: 1px solid black;
+  padding: 10%;
+  
+}
+.panel {
+  padding-left: 80px;
 }

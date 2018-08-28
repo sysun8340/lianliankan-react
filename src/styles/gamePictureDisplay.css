@@ -1,0 +1,74 @@
+.item {
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  border: 1px solid black;
+  margin-right: 5px;
+}
+.item-0 {
+  display: none
+}
+.item-1 {
+  background: url('../images/fruit-1.gif');
+  background-size: contain;
+}
+.item-2 {
+  background: url('../images/fruit-2.gif');
+  background-size: contain;
+}
+.item-3 {
+  background: url('../images/fruit-3.gif');
+  background-size: contain;
+}
+.item-4 {
+  background: url('../images/fruit-4.gif');
+  background-size: contain;
+}
+.item-5 {
+  background: url('../images/fruit-5.gif');
+  background-size: contain;
+}
+.item-6 {
+  background: url('../images/fruit-6.gif');
+  background-size: contain;
+}
+.item-7 {
+  background: url('../images/fruit-7.gif');
+  background-size: contain;
+}
+.item-8 {
+  background: url('../images/fruit-8.gif');
+  background-size: contain;
+}
+.item-9 {
+  background: url('../images/fruit-9.gif');
+  background-size: contain;
+}
+.item-10 {
+  background: url('../images/fruit-10.gif');
+  background-size: contain;
+}
+.item-11 {
+  background: url('../images/fruit-11.gif');
+  background-size: contain;
+}
+.item-12 {
+  background: url('../images/fruit-12.gif');
+  background-size: contain;
+}
+.item-13 {
+  background: url('../images/fruit-13.gif');
+  background-size: contain;
+}
+.item-14 {
+  background: url('../images/fruit-14.gif');
+  background-size: contain;
+}
+.item-15 {
+  background: url('../images/fruit-15.gif');
+  background-size: contain;
+}
+.item-16 {
+  background: url('../images/fruit-16.gif');
+  background-size: contain;
+}

@@ -1,11 +1,12 @@
-import React from 'react';
+import React from 'react'
 
 const GameMessage = () => {
   return (
     <div>
-      GameMessage
+      <p>时间：120 秒</p>
+      <p>分数：0</p>
     </div>
-  );
-};
+  )
+}
 
-export default GameMessage;
+export default GameMessage
