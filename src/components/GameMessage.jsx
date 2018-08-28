@@ -1,10 +1,12 @@
 import React from 'react'
+import { Label, Divider } from 'semantic-ui-react'
 
 const GameMessage = () => {
   return (
     <div>
-      <p>时间：120 秒</p>
-      <p>分数：0</p>
+      <Label size={'huge'}>剩余时间：0 秒</Label>
+      <Divider/>
+      <Label size={'huge'}>分数：0</Label>
     </div>
   )
 }
