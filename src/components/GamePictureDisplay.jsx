@@ -1,8 +1,16 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import '../styles/gamePictureDisplay.css'
 
 class GamePictureDisplay extends Component {
 
+  static propTypes = {
+    matrix: PropTypes.array,
+    selected: PropTypes.array,
+    current: PropTypes.array,
+    leftedTime: PropTypes.number,
+    score: PropTypes.number
+  }
   static defaultProps = {
     matrix: [
       [0, 0, 0, 0, 0, 0],
@@ -11,7 +19,9 @@ class GamePictureDisplay extends Component {
       [0, 5, 5, 6, 6, 0],
       [0, 7, 7, 8, 8, 0],
       [0, 0, 0, 0, 0, 0]
-    ]
+    ],
+    leftedTime: 0,
+    score: 0
   }
   render() {
     const { matrix } = this.props
