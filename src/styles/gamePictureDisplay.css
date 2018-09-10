@@ -5,8 +5,12 @@
   border: 1px solid black;
   margin-right: 5px;
 }
+.selected {
+  border: 3px solid red;
+}
 .item-0 {
-  display: none
+  
+  
 }
 .item-1 {
   background: url('../images/fruit-1.gif');

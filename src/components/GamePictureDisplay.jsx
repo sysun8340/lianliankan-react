@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import '../styles/gamePictureDisplay.css'
+import cx from 'classnames'
+import { isLinkable } from '../utils'
 
 class GamePictureDisplay extends Component {
 
@@ -9,7 +11,8 @@ class GamePictureDisplay extends Component {
     selected: PropTypes.array,
     current: PropTypes.array,
     leftedTime: PropTypes.number,
-    score: PropTypes.number
+    score: PropTypes.number,
+    isSelected: PropTypes.func,
   }
   static defaultProps = {
     matrix: [
@@ -24,13 +27,22 @@ class GamePictureDisplay extends Component {
     score: 0
   }
   render() {
-    const { matrix } = this.props
+    const { matrix, isSelected, tryLinkable } = this.props
     return (
       <div className='pictures'>
         {
-          matrix.map((row, index) => <div key={index} className='row'>
+          matrix.map((row, y) => <div key={y} className='row'>
             {
-              row.map((item, index) => <div key={index} className={`item-${item} item`}></div>)
+              row.map((item, x) => 
+                <div 
+                  key={x} 
+                  className={cx(`item-${item} item`, {selected: isSelected(x, y)})}
+                  onClick={() => {
+                    tryLinkable(x, y)
+                  }}
+                >
+                </div>
+              )
             }
           </div>)
         }
