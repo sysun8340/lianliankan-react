@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import '../styles/gamePictureDisplay.css'
 import cx from 'classnames'
-import { isLinkable } from '../utils'
 
 class GamePictureDisplay extends Component {
 

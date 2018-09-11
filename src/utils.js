@@ -23,42 +23,114 @@ export const resetMatrix = (p1, p2, matrix) => {
   return matrix
 }
 
-// p2的横坐标大于p1,传参时注意！
 const isHorizontalLinkable = (p1, p2, matrix) => {
+  // 判断p1和p2是否是同一点
+  if(p1[0] === p2[0] && p1[1] === p2[1]) return false
   // 判断p1和p2是否在同一行
   if(p1[1] !== p2[1]) return false
+  // 调整p1和p2的顺序
+  let newP1 = p1
+  let newP2 = p2
+  if(p2[0] < p1[0]) {
+     newP1 = [...p2]
+     newP2 = [...p1]
+  } 
   // 判断p1和p2中间的值是否为0
-  for(let i=1; i<p2[0]-p1[0]; i++) {
-    if(matrix[p1[1]][p1[0]+i] !== 0) return false
+  for(let i=1; i<newP2[0]-newP1[0]; i++) {
+    const p = [newP1[0]+i, newP1[1]]
+    if(getValueByPonit(p, matrix) !== 0) return false
   }
   return true
 }
 
 // p2的纵坐标大于p1,传参时注意！
 const isVerticalLinkable = (p1, p2, matrix) => {
+  // 判断p1和p2是否是同一点
+  if(p1[0] === p2[0] && p1[1] === p2[1]) return false
   // 判断p1和p2是否在一列
   if(p1[0] !== p2[0]) return false
+  let newP1 = p1
+  let newP2 = p2
+  // 调整p1和p2的顺序
+  if(p2[1] < p1[1]) {
+    newP1 = [...p2]
+    newP2 = [...p1]
+  }
   // 判断p1和p2的中间值是否为0
-  for(let j=1; j< p2[1]-p1[1]; j++) {
-    if(matrix[p1[1]+j][p1[0]] !==0) return false
+  for(let j=1; j< newP2[1]-newP1[1]; j++) {
+    const p = [newP1[0], newP1[1]+j]
+    if(getValueByPonit(p, matrix) !==0) return false
   }
   return true
 }
 
-const isHVLinkable = (p1, p2) => {
-
+// 是否可以用一条折线连接
+const isOnePolygonalLineLinkable = (p1, p2, matrix) => {
+  // 先调整p1和p2的顺序
+  let newP1 = p1
+  let newP2 = p2
+  if(p2[1] < p1[1]) {
+    newP1 = [...p2]
+    newP2 = [...p1]
+  }
+  // 先找出p1和p2交叉点p3、p4
+  const p3 = [newP2[0], newP1[1]]
+  const p4 = [newP1[0], newP2[1]]
+  // 判断交叉点是否为0
+  if(getValueByPonit(p3, matrix) === 0 &&
+    isHorizontalLinkable(newP1, p3, matrix) && 
+    isVerticalLinkable(p3, newP2, matrix)
+  ) return true
+  if(getValueByPonit(p4, matrix) === 0 && 
+    isVerticalLinkable(newP1, p4, matrix) && 
+    isHorizontalLinkable(p4, newP2, matrix)
+  ) return true
+  return false
 }
 
-const isVHLinkable = (p1, p2) => {
-
-}
-
-const isHVHLinkable = (p1, p2) => {
-
-}
-
-const isVHVLinkable = (p1, p2) => {
-
+// 是否可用两条折线连接，不包括边缘折线
+const isTwoPolygonalLineLinkable = (p1, p2, matrix) => {
+    // 先调整p1和p2的顺序
+    let newP1 = p1
+    let newP2 = p2
+    if(p2[1] < p1[1]) {
+      newP1 = [...p2]
+      newP2 = [...p1]
+    }
+    // 同时从newP1往下找一个可以跟newP1连接的点p3，从newP2往上找一个可以跟newP1连接的店p4
+    // 分别判断p3、p4是否可以和newP2、newP1用一条折线连接
+    for(let i=1; i<newP2[1]-newP1[1]; i++) {
+      const p3 = [newP1[0], newP1[1] + i]
+      const p4 = [newP2[0], newP2[1] - i]
+      if(getValueByPonit(p3, matrix) === 0 && isOnePolygonalLineLinkable(p3, newP2, matrix)) return true
+      if(getValueByPonit(p4, matrix) === 0 && isOnePolygonalLineLinkable(newP1, p4, matrix)) return true
+    }
+    // 沿着newP1的横轴找
+    // 1、从左向右找
+    if(newP1[0] < newP2[0]) {
+      for(let i=1; i<newP2[0]-newP1[0]; i++) {
+        const p = [newP1[0] + i, newP1[1]]
+        if(getValueByPonit(p, matrix) === 0 && isOnePolygonalLineLinkable(p, newP2, matrix)) return true
+      }
+    }
+    // 2、从右向左找
+    else {
+      for(let i=1; i<newP1[0]-newP2[0]; i++) {
+        const p = [newP1[0] - i, newP1[1]]
+        if(getValueByPonit(p, matrix) === 0 && isOnePolygonalLineLinkable(p, newP2, matrix)) return true
+      }
+    }
+    // 遍历整个矩阵寻找一遍
+    for(let y=0; y< matrix.length; y++) {
+      for( let x=0; x<matrix[0].length; x++) {
+        const p = [x, y]
+        if(getValueByPonit(p, matrix) !== 0) continue
+        if(isHorizontalLinkable(newP1, p, matrix) || isVerticalLinkable(newP1, p, matrix)) {
+          if(isOnePolygonalLineLinkable(p, newP2, matrix)) return true
+        }
+      }
+    }
+    return false
 }
 
 export const isLinkable = (p1, p2, matrix) => {
@@ -70,10 +142,8 @@ export const isLinkable = (p1, p2, matrix) => {
   // 判断是否可以连接
   if(isHorizontalLinkable(p1, p2, matrix) || 
     isVerticalLinkable(p1, p2, matrix) ||
-    isHVLinkable(p1, p2, matrix) ||
-    isVHLinkable(p1, p2, matrix) || 
-    isHVHLinkable(p1, p2, matrix) ||
-    isVHVLinkable(p1, p2, matrix)
+    isOnePolygonalLineLinkable(p1, p2, matrix) || 
+    isTwoPolygonalLineLinkable(p1, p2, matrix)
   ) {
     return true
   }

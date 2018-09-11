@@ -37,6 +37,8 @@ class Game extends Component {
         selected: [x, y]
       })
     }
+    // 如果在空格子上点击，直接返回
+    if(this.state.matrix[y][x] === 0) return
     // 判断是否可连，如果可连重置matrix和selected
     else if(isLinkable(this.state.selected, [x, y], this.state.matrix)) {
       this.setState({
@@ -48,6 +50,19 @@ class Game extends Component {
     else {
       this.setSelectedCoordinate(x, y)
     }
+  }
+
+  handleStart = () => {
+    this.setState({
+      remainedTime: 120
+    })
+    
+  }
+
+  countDown = () => {
+    this.timer = setInterval(this.setState({
+      remainedTime: this.state.remainedTime - 1
+    }), 1000)
   }
 
   render() {
@@ -71,7 +86,7 @@ class Game extends Component {
             </Grid.Column>
             <Grid.Column width={5}  textAlign={'center'} verticalAlign={'middle'}>
               <Segment>
-                <GameControl />
+                <GameControl handleStart={this.handleStart}/>
                 <Divider />
                 <GameMessage 
                   {...this.state} 
