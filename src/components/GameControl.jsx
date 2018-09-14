@@ -1,14 +1,18 @@
 import React, { Component } from 'react'
 import '../styles/gameControl.css'
 import 'semantic-ui-css/semantic.min.css'
-import { Button } from 'semantic-ui-react'
+import { Button, Header } from 'semantic-ui-react'
 
 class GameControl extends Component {
   render() {
-    const { handleStart } = this.props
+    const { handleStart, handleReset, isGameStart, isGameOver } = this.props
     return (
       <div className='control'>
-        <Button positive onClick={() => handleStart()}>开始</Button>
+        {
+          isGameStart ? <Header as='h2'>游戏进行中...</Header> : 
+            (isGameOver ? <Button color={'blue'} onClick={() => handleReset()}>游戏结束，再来一局</Button> : 
+            <Button positive onClick={() => handleStart()}>开始</Button>)
+        }
       </div>
     )
   }

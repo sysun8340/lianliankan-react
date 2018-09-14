@@ -40,7 +40,7 @@ const isHorizontalLinkable = (p1, p2, matrix) => {
     const p = [newP1[0]+i, newP1[1]]
     if(getValueByPonit(p, matrix) !== 0) return false
   }
-  return true
+  return [p1, p2]
 }
 
 // p2的纵坐标大于p1,传参时注意！
@@ -61,7 +61,7 @@ const isVerticalLinkable = (p1, p2, matrix) => {
     const p = [newP1[0], newP1[1]+j]
     if(getValueByPonit(p, matrix) !==0) return false
   }
-  return true
+  return [p1, p2]
 }
 
 // 是否可以用一条折线连接
@@ -80,11 +80,11 @@ const isOnePolygonalLineLinkable = (p1, p2, matrix) => {
   if(getValueByPonit(p3, matrix) === 0 &&
     isHorizontalLinkable(newP1, p3, matrix) && 
     isVerticalLinkable(p3, newP2, matrix)
-  ) return true
+  ) return [p1, p3, p2]
   if(getValueByPonit(p4, matrix) === 0 && 
     isVerticalLinkable(newP1, p4, matrix) && 
     isHorizontalLinkable(p4, newP2, matrix)
-  ) return true
+  ) return [p1, p4, p2]
   return false
 }
 
@@ -97,36 +97,44 @@ const isTwoPolygonalLineLinkable = (p1, p2, matrix) => {
       newP1 = [...p2]
       newP2 = [...p1]
     }
-    // 同时从newP1往下找一个可以跟newP1连接的点p3，从newP2往上找一个可以跟newP1连接的店p4
-    // 分别判断p3、p4是否可以和newP2、newP1用一条折线连接
+    // 从newP1往下找一个可以跟newP1连接的点p3
+    // 判断p3否可以和newP2用一条折线连接
     for(let i=1; i<newP2[1]-newP1[1]; i++) {
       const p3 = [newP1[0], newP1[1] + i]
-      const p4 = [newP2[0], newP2[1] - i]
-      if(getValueByPonit(p3, matrix) === 0 && isOnePolygonalLineLinkable(p3, newP2, matrix)) return true
-      if(getValueByPonit(p4, matrix) === 0 && isOnePolygonalLineLinkable(newP1, p4, matrix)) return true
+      const reArr = isOnePolygonalLineLinkable(p3, newP2, matrix)
+      if(getValueByPonit(p3, matrix) === 0 && 
+        reArr && isVerticalLinkable(newP1, p3, matrix)
+      ) return [newP1, ...reArr ]
     }
     // 沿着newP1的横轴找
     // 1、从左向右找
     if(newP1[0] < newP2[0]) {
       for(let i=1; i<newP2[0]-newP1[0]; i++) {
         const p = [newP1[0] + i, newP1[1]]
-        if(getValueByPonit(p, matrix) === 0 && isOnePolygonalLineLinkable(p, newP2, matrix)) return true
+        const reArr = isOnePolygonalLineLinkable(p, newP2, matrix)
+        if(getValueByPonit(p, matrix) === 0 && 
+          reArr && isHorizontalLinkable(p, newP1, matrix)
+        ) return [newP1, ...reArr]
       }
     }
     // 2、从右向左找
     else {
       for(let i=1; i<newP1[0]-newP2[0]; i++) {
         const p = [newP1[0] - i, newP1[1]]
-        if(getValueByPonit(p, matrix) === 0 && isOnePolygonalLineLinkable(p, newP2, matrix)) return true
+        const reArr = isOnePolygonalLineLinkable(p, newP2, matrix)
+        if(getValueByPonit(p, matrix) === 0 && 
+          reArr && isHorizontalLinkable(p, newP1, matrix)
+        ) return [newP1, ...reArr]
       }
     }
     // 遍历整个矩阵寻找一遍
     for(let y=0; y< matrix.length; y++) {
       for( let x=0; x<matrix[0].length; x++) {
         const p = [x, y]
+        const reArr = isOnePolygonalLineLinkable(p, newP2, matrix)
         if(getValueByPonit(p, matrix) !== 0) continue
         if(isHorizontalLinkable(newP1, p, matrix) || isVerticalLinkable(newP1, p, matrix)) {
-          if(isOnePolygonalLineLinkable(p, newP2, matrix)) return true
+          if(reArr) return [newP1, ...reArr]
         }
       }
     }
@@ -140,12 +148,10 @@ export const isLinkable = (p1, p2, matrix) => {
   // 判断v1和v2是否相等
   if(v1 !== v2) return false
   // 判断是否可以连接
-  if(isHorizontalLinkable(p1, p2, matrix) || 
-    isVerticalLinkable(p1, p2, matrix) ||
+  return (
+    isHorizontalLinkable(p1, p2, matrix) || 
+    isVerticalLinkable(p1, p2, matrix) || 
     isOnePolygonalLineLinkable(p1, p2, matrix) || 
     isTwoPolygonalLineLinkable(p1, p2, matrix)
-  ) {
-    return true
-  }
-  return false
+  )
 }

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import GamePictureDisplay from './GamePictureDisplay' 
 import GameControl from './GameControl'
 import GameMessage from './GameMessage'
+import LinkLine from './LinkLine'
 import '../styles/game.css'
 import { Container, Header, Grid, Segment, Divider } from 'semantic-ui-react'
 import { genMatrix, frameMatrix, isLinkable, resetMatrix } from '../utils'
@@ -12,8 +13,11 @@ class Game extends Component {
     matrix: frameMatrix(genMatrix()),
     selected: [],
     current: [],
+    linkablePoints: [],
     remainedTime: 0,
-    score: 0
+    score: 0,
+    isGameStart: false,
+    isGameOver: false
   }
 
   setSelectedCoordinate = (x, y) => {
@@ -26,7 +30,10 @@ class Game extends Component {
   isSelected = (x, y) => {
     const selectedX = this.state.selected[0]
     const selectedY = this.state.selected[1]
+    const currentX = this.state.current[0]
+    const currentY = this.state.current[1]
     if(selectedX === x && selectedY === y) return true
+    if(currentX === x && currentY ===y) return true
     return false
   }
 
@@ -39,12 +46,22 @@ class Game extends Component {
     }
     // 如果在空格子上点击，直接返回
     if(this.state.matrix[y][x] === 0) return
-    // 判断是否可连，如果可连重置matrix和selected
-    else if(isLinkable(this.state.selected, [x, y], this.state.matrix)) {
+    // 判断是否可连，如果可连重置matrix和selected、current、分数
+    const linkablePoints = isLinkable(this.state.selected, [x, y], this.state.matrix)
+    if(linkablePoints) {
       this.setState({
-        matrix: resetMatrix(this.state.selected, [x, y], this.state.matrix),
-        selected: []
+        linkablePoints: linkablePoints,
+        current: [x, y]
       })
+      setTimeout(() => {
+        this.setState({
+          matrix: resetMatrix(this.state.selected, [x, y], this.state.matrix),
+          selected: [],
+          current: [],
+          linkablePoints: [],
+          score: this.state.score + 1
+        })
+      }, 100)
     }
     // 如果不可连重置selected
     else {
@@ -54,15 +71,36 @@ class Game extends Component {
 
   handleStart = () => {
     this.setState({
-      remainedTime: 120
+      remainedTime: 100,
+      isGameStart: true
     })
-    
+    this.timer = setInterval(this.countDown, 1000)
   }
 
   countDown = () => {
-    this.timer = setInterval(this.setState({
+    if(this.state.remainedTime === 0) {
+      clearInterval(this.timer)
+      this.setState({
+        isGameStart: false,
+        isGameOver: true
+      })
+      return
+    }
+    this.setState({
       remainedTime: this.state.remainedTime - 1
-    }), 1000)
+    })
+  }
+
+  handleReset = () => {
+    this.setState({
+      matrix: frameMatrix(genMatrix()),
+      selected: [],
+      current: [],
+      remainedTime: 0,
+      score: 0,
+      isGameStart: false,
+      isGameOver: false
+    })
   }
 
   render() {
@@ -74,7 +112,7 @@ class Game extends Component {
           <Grid centered style={{
             border: '1px solid gray',
             minHeight: '550px', 
-            minWidth: '1000px'
+            width: '1000px'
           }}>
             <Grid.Column width={11} textAlign={'center'} verticalAlign={'middle'}>
               <GamePictureDisplay 
@@ -83,10 +121,16 @@ class Game extends Component {
                 isSelected={this.isSelected}
                 tryLinkable={this.tryLinkable}
               />
+              <LinkLine linkablePoints={this.state.linkablePoints}/>
             </Grid.Column>
             <Grid.Column width={5}  textAlign={'center'} verticalAlign={'middle'}>
               <Segment>
-                <GameControl handleStart={this.handleStart}/>
+                <GameControl 
+                  handleStart={this.handleStart} 
+                  handleReset={this.handleReset}
+                  isGameStart={this.state.isGameStart} 
+                  isGameOver={this.state.isGameOver}
+                />
                 <Divider />
                 <GameMessage 
                   {...this.state} 

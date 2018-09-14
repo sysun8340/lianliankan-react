@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import '../styles/gamePictureDisplay.css'
 import cx from 'classnames'
+import { Dimmer, Header } from 'semantic-ui-react'
 
 class GamePictureDisplay extends Component {
 
@@ -26,9 +27,12 @@ class GamePictureDisplay extends Component {
     score: 0
   }
   render() {
-    const { matrix, isSelected, tryLinkable } = this.props
+    const { matrix, isSelected, tryLinkable, isGameOver, isGameStart, current } = this.props
     return (
-      <div className='pictures'>
+      <div className={cx('pictures', {'gameover': isGameOver})}>
+        <Dimmer active={isGameOver}>
+          <Header as='h1' color='red'>GAME  OVER</Header>
+        </Dimmer>
         {
           matrix.map((row, y) => <div key={y} className='row'>
             {
@@ -37,7 +41,7 @@ class GamePictureDisplay extends Component {
                   key={x} 
                   className={cx(`item-${item} item`, {selected: isSelected(x, y)})}
                   onClick={() => {
-                    tryLinkable(x, y)
+                    if(isGameStart) tryLinkable(x, y)
                   }}
                 >
                 </div>
