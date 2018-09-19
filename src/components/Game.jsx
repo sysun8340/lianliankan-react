@@ -71,7 +71,7 @@ class Game extends Component {
 
   handleStart = () => {
     this.setState({
-      remainedTime: 100,
+      remainedTime: 20,
       isGameStart: true
     })
     this.timer = setInterval(this.countDown, 1000)
