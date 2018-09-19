@@ -8,4 +8,6 @@ clone or download to local to run with command: yarn start
 
 ## screenshots
 
-![img](src='./lianliankan.gif')
+![image](
+      https://github.com/sysun8340/lianliankan-react/blob/master/lianliankan.gif
+    )
